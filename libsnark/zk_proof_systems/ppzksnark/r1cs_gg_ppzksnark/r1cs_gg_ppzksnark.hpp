@@ -167,18 +167,21 @@ std::istream& operator>>(std::istream &in, r1cs_gg_ppzksnark_verification_key<pp
 template<typename ppT>
 class r1cs_gg_ppzksnark_verification_key {
 public:
-    libff::GT<ppT> alpha_g1_beta_g2;
+    libff::G1<ppT> alpha_g1;
+    libff::G2<ppT> beta_g2;
     libff::G2<ppT> gamma_g2;
     libff::G2<ppT> delta_g2;
 
     accumulation_vector<libff::G1<ppT> > gamma_ABC_g1;
 
     r1cs_gg_ppzksnark_verification_key() = default;
-    r1cs_gg_ppzksnark_verification_key(const libff::GT<ppT> &alpha_g1_beta_g2,
+    r1cs_gg_ppzksnark_verification_key(const libff::G1<ppT> &alpha_g1,
+                                       const libff::G2<ppT> &beta_g2,
                                        const libff::G2<ppT> &gamma_g2,
                                        const libff::G2<ppT> &delta_g2,
                                        const accumulation_vector<libff::G1<ppT> > &gamma_ABC_g1) :
-        alpha_g1_beta_g2(alpha_g1_beta_g2),
+        alpha_g1(alpha_g1),
+        beta_g2(beta_g2),
         gamma_g2(gamma_g2),
         delta_g2(delta_g2),
         gamma_ABC_g1(gamma_ABC_g1)
@@ -186,30 +189,24 @@ public:
 
     size_t G1_size() const
     {
-        return gamma_ABC_g1.size();
+        return gamma_ABC_g1.size() + 1;
     }
 
     size_t G2_size() const
     {
-        return 2;
-    }
-
-    size_t GT_size() const
-    {
-        return 1;
+        return 3;
     }
 
     size_t size_in_bits() const
     {
-        // TODO: include GT size
-        return (gamma_ABC_g1.size_in_bits() + 2 * libff::G2<ppT>::size_in_bits());
+
+        return (gamma_ABC_g1.size_in_bits() + 3 * libff::G2<ppT>::size_in_bits() + libff::G1<ppT>::size_in_bits());
     }
 
     void print_size() const
     {
         libff::print_indent(); printf("* G1 elements in VK: %zu\n", this->G1_size());
         libff::print_indent(); printf("* G2 elements in VK: %zu\n", this->G2_size());
-        libff::print_indent(); printf("* GT elements in VK: %zu\n", this->GT_size());
         libff::print_indent(); printf("* VK size in bits: %zu\n", this->size_in_bits());
     }
 
@@ -242,7 +239,8 @@ std::istream& operator>>(std::istream &in, r1cs_gg_ppzksnark_processed_verificat
 template<typename ppT>
 class r1cs_gg_ppzksnark_processed_verification_key {
 public:
-    libff::GT<ppT> vk_alpha_g1_beta_g2;
+    libff::G1_precomp<ppT> vk_alpha_g1_precomp;
+    libff::G2_precomp<ppT> vk_beta_g2_precomp; 
     libff::G2_precomp<ppT> vk_gamma_g2_precomp;
     libff::G2_precomp<ppT> vk_delta_g2_precomp;
 
