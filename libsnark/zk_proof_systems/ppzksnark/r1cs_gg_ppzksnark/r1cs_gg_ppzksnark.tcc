@@ -563,7 +563,7 @@ bool r1cs_gg_ppzksnark_online_verifier_weak_IC(const r1cs_gg_ppzksnark_processed
     const libff::G1_precomp<ppT> proof_g_C_precomp = ppT::precompute_G1(proof.g_C);
     const libff::G1_precomp<ppT> acc_precomp = ppT::precompute_G1(acc);
 
-    const libff::GT<ppT> f = ppT::miller_loop(pvk.vk_alpha_g1_precomp,  pvk.vk_beta_g2_precomp);
+    const libff::Fqk<ppT> f = ppT::miller_loop(pvk.vk_alpha_g1_precomp,  pvk.vk_beta_g2_precomp);
     const libff::GT<ppT> vk_alpha_g1_beta_g2 = ppT::final_exponentiation(f);
 
     const libff::Fqk<ppT> QAP1 = ppT::miller_loop(proof_g_A_precomp,  proof_g_B_precomp);
