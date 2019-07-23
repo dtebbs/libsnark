@@ -92,6 +92,7 @@ bool r1cs_gg_ppzksnark_verification_key<ppT>::operator==(const r1cs_gg_ppzksnark
 {
     return (this->alpha_g1 == other.alpha_g1 &&
             this->beta_g2 == other.beta_g2 &&
+            this->gen_g2 == other.gen_g2 &&
             this->delta_g2 == other.delta_g2 &&
             this->ABC_g1 == other.ABC_g1);
 }
@@ -101,6 +102,7 @@ std::ostream& operator<<(std::ostream &out, const r1cs_gg_ppzksnark_verification
 {
     out << vk.alpha_g1 << OUTPUT_NEWLINE;
     out << vk.beta_g2 << OUTPUT_NEWLINE;
+    out << vk.gen_g2 << OUTPUT_NEWLINE;
     out << vk.delta_g2 << OUTPUT_NEWLINE;
     out << vk.ABC_g1 << OUTPUT_NEWLINE;
 
@@ -113,6 +115,8 @@ std::istream& operator>>(std::istream &in, r1cs_gg_ppzksnark_verification_key<pp
     in >> vk.alpha_g1;
     libff::consume_OUTPUT_NEWLINE(in);
     in >> vk.beta_g2;
+    libff::consume_OUTPUT_NEWLINE(in);
+    in >> vk.gen_g2;
     libff::consume_OUTPUT_NEWLINE(in);
     in >> vk.delta_g2;
     libff::consume_OUTPUT_NEWLINE(in);
@@ -198,6 +202,7 @@ r1cs_gg_ppzksnark_verification_key<ppT> r1cs_gg_ppzksnark_verification_key<ppT>:
     r1cs_gg_ppzksnark_verification_key<ppT> result;
     result.alpha_g1 = libff::G1<ppT>::random_element();
     result.beta_g2 = libff::G2<ppT>::random_element();
+    result.gen_g2 = libff::G2<ppT>::random_element();
     result.delta_g2 = libff::G2<ppT>::random_element();
 
     libff::G1<ppT> base = libff::G1<ppT>::random_element();
@@ -367,6 +372,7 @@ r1cs_gg_ppzksnark_keypair<ppT> r1cs_gg_ppzksnark_generator(const r1cs_gg_ppzksna
 
     r1cs_gg_ppzksnark_verification_key<ppT> vk = r1cs_gg_ppzksnark_verification_key<ppT>(alpha_g1,
                                                                                          beta_g2,
+                                                                                         G2_gen,
                                                                                          delta_g2,
                                                                                          ABC_g1);
 
@@ -512,7 +518,7 @@ r1cs_gg_ppzksnark_processed_verification_key<ppT> r1cs_gg_ppzksnark_verifier_pro
     r1cs_gg_ppzksnark_processed_verification_key<ppT> pvk;
     pvk.vk_alpha_g1_precomp = ppT::precompute_G1(vk.alpha_g1);
     pvk.vk_beta_g2_precomp = ppT::precompute_G2(vk.beta_g2);
-    pvk.vk_generator_g2_precomp = ppT::precompute_G2(libff::G2<ppT>::one());
+    pvk.vk_generator_g2_precomp = ppT::precompute_G2(vk.gen_g2);
     pvk.vk_delta_g2_precomp = ppT::precompute_G2(vk.delta_g2);
     pvk.ABC_g1 = vk.ABC_g1;
 
