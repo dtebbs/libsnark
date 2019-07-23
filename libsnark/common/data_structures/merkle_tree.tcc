@@ -29,7 +29,7 @@ typename HashT::hash_value_type two_to_one_CRH(const typename HashT::hash_value_
     new_input.insert(new_input.end(), l.begin(), l.end());
     new_input.insert(new_input.end(), r.begin(), r.end());
 
-    const size_t digest_size = HashT::get_digest_len();
+    const size_t digest_size = HashT::get_digest_len();(void)digest_size;
     assert(l.size() == digest_size);
     assert(r.size() == digest_size);
 
